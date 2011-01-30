@@ -1,9 +1,10 @@
 /*
- * font.h
+ * BlinkenButton
+ * font.c
  *
  *  http://interactive-matter.org/
  *
- *  This file is part of Blinken Button.
+ *  This file is part of BlinkenButton.
  *
  *  Blinken Button is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,21 +16,40 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Blinken Button.  If not, see <http://www.gnu.org/licenses/>.
  *
- *
- *  Created on: 26.01.2010
+ *  Created on: 28.01.2011
+ *      Author: Marcus, Interactive Matter
  */
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#ifndef FONT_H_
-#define FONT_H_
+#include "core-flash-content.h"
 
-#define MAX_CHARS 59
-#define CHAR_OFFSET 0x20
+const prog_uint8_t default_sprites[][8] = {
+  {
+    0x0F,    // ____XXXX  12
+    0x0F,    // ____XXXX
+    0x0F,    // ____XXXX
+    0x0F,    // ____XXXX
+    0xF0,    // XXXX____
+    0xF0,    // XXXX____
+    0xF0,    // XXXX____
+    0xF0,    // XXXX____
+  },
+  {
+    0xF0,    // XXXX____  13
+    0xF0,    // XXXX____
+    0xF0,    // XXXX____
+    0xF0,    // XXXX____
+    0x0F,    // ____XXXX
+    0x0F,    // ____XXXX
+    0x0F,    // ____XXXX
+    0x0F,    // ____XXXX
+  }
+};
 
-const uint8_t font[] PROGMEM = {
+const prog_uint8_t font[] = {
   // 3 chars bitmap, 1 char length
    0x00, 0x00, 0x00, 0x01 ,             // 0x20, 32, ' '
    0x17, 0x00, 0x00, 0x01 ,             // 0x21, 33, !
@@ -96,5 +116,3 @@ const uint8_t font[] PROGMEM = {
    0x11, 0x1f, 0x00, 0x02 ,             // 0x5E, 94, ^
    0x1f, 0x1f, 0x1f, 0x03               // 0x5F, 95, _, used as block, all on
 };
-
-#endif /* FONT_H_ */

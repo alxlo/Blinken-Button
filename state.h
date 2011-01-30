@@ -1,5 +1,5 @@
 /*
- * animation.h
+ * state.h
  *
  *  http://interactive-matter.org/
  *
@@ -21,13 +21,16 @@
  *  Created on: 26.01.2010
  */
 
-#ifndef ANIMATION_H_
-#define ANIMATION_H_
+#ifndef STATE_H_
+#define STATE_H_
 
-//initialization routine
-void animation_init(void);
-//render text
-void animation_display_message(char* message);
-void animation_set_sequence(int8_t start, int8_t end, uint8_t speed);
+typedef void(*state_callback)(void);
 
-#endif /* ANIMATION_H_ */
+uint8_t state_register_task(state_callback callback);
+uint8_t state_register_state(void);
+void state_process(void);
+uint8_t state_is_active(uint8_t state_number);
+void state_activate(uint8_t state_number);
+void state_deactivate(uint8_t state_number);
+
+#endif /* STATE_H_ */

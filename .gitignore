@@ -1,1 +1,20 @@
-.DS_Store
+#Ignoring all the eclipse stuff
+.cproject
+.metadata/
+.project
+Makefile
+Release/
+Release/*
+Debug/
+Debug/*
+
+#Ignoring all make results
+*.lst
+*.o
+*.amp
+.settings
+*.out
+*.out.map
+*.elf
+*.hex
+

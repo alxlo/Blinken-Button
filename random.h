@@ -1,5 +1,5 @@
 /*
- * state.h
+ * random.h
  *
  *  http://interactive-matter.org/
  *
@@ -21,16 +21,19 @@
  *  Created on: 26.01.2010
  */
 
-#ifndef STATE_H_
-#define STATE_H_
+#ifndef RANDOM_H_
+#define RANDOM_H_
 
-typedef void(*state_callback)(void);
+/*
+ * To randomize the seed we simply read add up all memory content.
+ * To generate a god randomizity it is useful to do this as early as possible
+ * in the startup.
+ */
+void randomize_seed(void);
 
-uint8_t state_register_task(state_callback callback);
-uint8_t state_register_state();
-void state_process(void);
-uint8_t state_is_active(uint8_t state_number);
-void state_activate(uint8_t state_number);
-void state_deactivate(uint8_t state_number);
+/*
+ * This generates a new random number of maximum 'max'
+ */
+unsigned int get_random(unsigned int max);
 
-#endif /* STATE_H_ */
+#endif /* RANDOM_H_ */

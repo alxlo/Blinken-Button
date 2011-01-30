@@ -1,5 +1,5 @@
 /*
- * display.h
+ * font.h
  *
  *  http://interactive-matter.org/
  *
@@ -20,27 +20,23 @@
  *
  *  Created on: 26.01.2010
  */
+#include <avr/io.h>
+#include <avr/pgmspace.h>
 
-#ifndef DISPLAY_H_
-#define DISPLAY_H_
+#ifndef FONT_H_
+#define CORE_FLASH_CONTENT_H_
 
-//Enable this if you use PNP transistors - disable else
-#define PNP_TRANSISTOR
+/*
+ * copy_to_buffer
+ * Copies the given sprite from PROGMEM to RAM.
+ */
+#define copy_to_buffer(sprite, buffer) memcpy_P(buffer, sprite, 8)
 
-//sprite display
-void display_init();
 
-//display the next sprite
-void display_advance_buffer(void);
+extern const prog_uint8_t default_sprites[][8];
 
-void display_render(void);
+#define MAX_CHARS 59
+#define CHAR_OFFSET 0x20
 
-//render a character
-void
-display_load_sprite(uint8_t origin[]);
-
-//two little helpr routines to control the prog led on the back
-void display_prog_led_enable(void);
-void display_prog_led_disable(void);
-
-#endif /* DISPLAY_H_ */
+extern const prog_uint8_t font[];
+#endif /* FONT_H_ */

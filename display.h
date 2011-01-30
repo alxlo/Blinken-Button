@@ -1,5 +1,5 @@
 /*
- * random.h
+ * display.h
  *
  *  http://interactive-matter.org/
  *
@@ -21,11 +21,20 @@
  *  Created on: 26.01.2010
  */
 
-#ifndef RANDOM_H_
-#define RANDOM_H_
+#ifndef DISPLAY_H_
+#define DISPLAY_H_
 
-void randomize_seed();
-void set_seed(unsigned int value);
-unsigned int get_random(unsigned int upper_bound);
+//Enable this if you use PNP transistors - disable else
+#define PNP_TRANSISTOR
 
-#endif /* RANDOM_H_ */
+//sprite display
+void display_init(void);
+
+//render a sprite (or image)
+void
+display_load_sprite(uint8_t origin[]);
+
+//display the next sprite
+void display_advance_buffer(void);
+
+#endif /* DISPLAY_H_ */
