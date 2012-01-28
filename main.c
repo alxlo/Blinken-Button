@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- *  http://interactive-matter.org/
+ *  http://interactive-matter.eu/
  *
  *  This file is part of Blinken Button.
  *
@@ -25,6 +25,27 @@
  * The images for the animations, the sequences of images building the
  * animations, the texts to display and the font to render the texts to images
  * is stored in the flash memory.
+ *
+ * You will find the following source files in this package:
+ * main.c - the main program, you are already there
+ * Makefile - a custom make file to compile the Blinken Button and install it
+ *            with your AVR programmer, check if the programmer settings are
+ *            appropriate for your computer.
+ * custom-flash-content.c/.h - the definition of the various images, animations
+ *                             & texts for the Blinken Button
+ * core-flash-content.c/.h - animations you probably don't want to change,
+ *                           the font to render the text.
+ * rendering.c/.h - all the stuff needed to animate the animations and display
+ *                  the text. here are the calculations and update routines.
+ *                  The display driver itself is in the next file.
+ * display.c/.h - routines to display images on the display. The low level
+ *                display driver stuff like going through rows, mapping images
+ *                to output pins & the display buffer.
+ * random.c/.h - small random routine to state with a new animation every time
+ *               the Blinken Button is switched on. And to randomly sequence
+ *               animations and texts.
+ * state.c/.h - a small helper routine to remember what needs to be done or is
+ *              going on in order to do the right thing at the right time.
  *
  * If you want to tinker with the animations, images and texts have a look in
  * the file 'custom-flash-content.c'. There you can change or create new text
@@ -60,15 +81,15 @@
  * Therefore you will only find the cryptic 'process_state' in the main routine.
  */
 
-
 //sometimes AVR Eclipse gets the frequency wrong, so I need t set it here fixed
 #define F_CPU 8000000
 
+//include the definitions for our chip, like pins, ports & so on
 #include <avr/io.h>
-#include <util/delay.h>
-#include <avr/pgmspace.h>
+//we power up & down chip components as needed, here are the functions to do this
 #include <avr/power.h>
-#include <stdlib.h>
+//we are using interrupts & timers as schedule - here we have the def. of the
+//interrupt routines and names
 #include <avr/interrupt.h>
 
 // state manages the triggering of calculations
@@ -90,7 +111,7 @@ main(void)
   /*
    * Even though the LEDs waste a lot of power it is good practice to use to disable all
    * CPU components first and power up only those components we need later.
-   * So here we switch anything of
+   * So here we switch anything of like UART, ADC, timers and so on.
    */
   power_all_disable();
   //now start the animations
@@ -100,18 +121,37 @@ main(void)
    * now we have initialized all components and can now switch to reactive mode.
    * We enable all interrupts globally. By that the selected interrupts start
    * triggering the interrupt routines.
+   * The interrupts are needed to schedule our program activities according to
+   * the timers - for which we are using timer overflow interrupts.
    */
-   sei();
+  sei();
 
-   /*
-    * Now we can switch to the main loop and loop until the power is switched off
-    */
-   for( ; ;)
+  /*
+   * Now we can switch to the main loop and loop until the power is switched off
+   */
+  for (;;)
     {
-     /*
-      * by state_process we check if a new image has to be loaded and call the load routine
-      */
+      /*
+       * by state_process we check if a new image has to be loaded and call the load routine
+       */
       state_process();
     }
 }
 
+//timer 0 controls the row rendering
+ISR(TIMER0_COMPA_vect )
+{
+  display_render_row();
+}
+
+//timer 1 is used to decide what to display
+ISR (TIMER1_OVF_vect)
+{
+  aimation_update();
+}
+
+//timer 2 is used to switch between the different images of an animation or text
+ISR(TIMER2_OVF_vect)
+{
+  animation_switch_sprite();
+}

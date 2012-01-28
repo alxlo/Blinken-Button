@@ -1,7 +1,7 @@
 /*
  * rendering.c
  *
- *  http://interactive-matter.org/
+ *  http://interactive-matter.eu/
  *
  *  This file is part of Blinken Button.
  *
@@ -28,17 +28,27 @@
  *  text using the font and also take the scrolling into consideration.
  *  This is all done here.
  */
-#include <stdint.h>
-#include <string.h>
+//we are using interrupts & timers as schedule - here we have the def. of the
+//interrupt routines and names
 #include <avr/pgmspace.h>
+//we are using interrupts & timers as schedule - here we have the def. of the
+//interrupt routines and names
 #include <avr/interrupt.h>
+//we power up & down chip components as needed, here are the functions to do this
 #include <avr/power.h>
+#include <string.h>
 
+//we need our own definitions
 #include "rendering.h"
+//we need the font & default sprites
 #include "core-flash-content.h"
+//and we need the texts and animations
 #include "custom-flash-content.h"
+//we are using states to track activities
 #include "state.h"
+//and we randomly select what to do
 #include "random.h"
+//and we need our display
 #include "display.h"
 
 /*
@@ -476,17 +486,18 @@ animation_start_update_timer(void)
 }
 
 volatile uint8_t test_row = 0;
-volatile uint8_t test_column=0;
+volatile uint8_t test_column = 0;
 
 /*
  * And this is the real code for Timer1
  */
-ISR (TIMER1_OVF_vect)
+void aimation_update(void)
 {
   //if the test state is active we first render the test pattern
-  if (state_is_active(state_animation_test_pattern)) {
+  if (state_is_active(state_animation_test_pattern))
+    {
       return;
-  }
+    }
   //if we are displaying animations
   if (state_is_active(state_animation_displaying_animation))
     {
@@ -524,9 +535,11 @@ animation_start_animation_timer(void)
  * This is the actual timer routine which controls switching from one sprite
  * to the other in a regular manner.
  */
-ISR(TIMER2_OVF_vect)
+void
+animation_switch_sprite(void)
 {
-  if (state_is_active(state_animation_test_pattern)) {
+  if (state_is_active(state_animation_test_pattern))
+    {
       //we simply let a dot go from top left to bottom right
       //so we first clear the buffer
       animation_clear_buffer(0);
@@ -539,13 +552,15 @@ ISR(TIMER2_OVF_vect)
       //on to thenext column
       test_column++;
       //if we reached the last column
-      if (test_column>=8) {
+      if (test_column >= 8)
+        {
           //we switch to the next row
           test_row++;
           //and start at the first column again
-          test_column=0;
+          test_column = 0;
           //and if we even reached the last row - we can end the test pattern
-          if (test_row>=8) {
+          if (test_row >= 8)
+            {
               //We leave the buffer in a proper state
               animation_clear_buffer(0);
               //and deactivate our test state an go over to 'normal' operation
@@ -554,10 +569,10 @@ ISR(TIMER2_OVF_vect)
               animation_load_next_sequence();
               //load the first sprite immediately
               animation_load_next_sprite();
-          }
-      }
+            }
+        }
       return;
-  }
+    }
   //we should not wait any longer
   if (animation_sprite_wait == 0)
     {

@@ -1,7 +1,7 @@
 /*
  * display.h
  *
- *  http://interactive-matter.org/
+ *  http://interactive-matter.eu/
  *
  *  This file is part of Blinken Button.
  *
@@ -24,17 +24,20 @@
 #ifndef DISPLAY_H_
 #define DISPLAY_H_
 
-//Enable this if you use PNP transistors - disable else
-#define PNP_TRANSISTOR
-
 //sprite display
-void display_init(void);
+void
+display_init(void);
 
 //render a sprite (or image)
 void
 display_load_sprite(uint8_t origin[]);
 
 //display the next sprite
-void display_advance_buffer(void);
+void
+display_advance_buffer(void);
+
+//the timer routine to render the next row
+void
+display_render_row(void);
 
 #endif /* DISPLAY_H_ */
